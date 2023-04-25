@@ -1,5 +1,8 @@
 import db.ExpenseFileDAO
 import entities.Expense
+import java.lang.Exception
+import java.sql.Connection
+import java.sql.DriverManager
 import java.time.LocalDateTime
 
 fun main(args: Array<String>) {
