@@ -1,0 +1,23 @@
+version: "3.7"
+services:
+  db:
+    image: postgres:14-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB: db
+    expose:
+      - 5432
+
+  manager:
+    build: .
+    volumes:
+      - ./src:/opt/manager
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+volumes:
+  postgres_data:
