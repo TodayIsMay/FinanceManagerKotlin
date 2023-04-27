@@ -5,7 +5,7 @@ import com.zaxxer.hikari.HikariDataSource
 import java.sql.Connection
 import java.sql.SQLException
 
-object DataSrc {
+object DataSource {
     private val config = HikariConfig()
     private var ds: HikariDataSource? = null
 
@@ -22,4 +22,6 @@ object DataSrc {
     @get:Throws(SQLException::class)
     val connection: Connection
         get() = ds!!.connection
+
+    val dataSource = ds
 }
