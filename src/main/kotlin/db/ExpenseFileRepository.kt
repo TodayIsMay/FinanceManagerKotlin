@@ -2,12 +2,13 @@ package db
 
 import ExpenseMatcher
 import entities.Expense
+import org.springframework.jdbc.core.JdbcTemplate
 import java.io.File
 import java.time.LocalDateTime
 
-class ExpenseFileRepository {
+class ExpenseFileRepository(private val jdbcTemplate: JdbcTemplate) {
     private val expenseMather = ExpenseMatcher()
-    private val file: File = File("src/main.main/resources/Database")
+    private val file: File = File("src/main/resources/Database")
 
     fun getExpenses(): List<Expense> {
         val lines = file.readText().split(";")
@@ -46,9 +47,11 @@ class ExpenseFileRepository {
     }
 
     /**
-     * Inserts expense into fileDB
+     * Inserts expense into DB
      */
     fun insert(expense: Expense) {
-        file.appendText("${expense.date},${expense.comment},${expense.amount};")
+        val sql = "insert into person (name, age, email) values ('name', 1, 'email')"
+        val con = jdbcTemplate.dataSource?.connection
+        con?.prepareStatement(sql)?.execute()
     }
 }

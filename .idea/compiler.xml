@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="FinanceManagerKotlin" target="11" />
+      <module name="FinanceManagerKotlin" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

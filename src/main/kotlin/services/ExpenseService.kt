@@ -1,15 +1,21 @@
 package services
 
-import db.ExpenseFileRepository
 import entities.Expense
+import org.springframework.jdbc.core.JdbcTemplate
+import repositories.ExpenseRepository
+import java.time.LocalDateTime
 
-class ExpenseService {
-    private val expenseFileRepository = ExpenseFileRepository()
+class ExpenseService(val jdbcTemplate: JdbcTemplate) {
+    val expenseRepository: ExpenseRepository = ExpenseRepository(jdbcTemplate)
     fun getExpenses(): List<Expense> {
-        return expenseFileRepository.getExpenses()
+        return expenseRepository.getExpenses()
     }
 
     fun sortExpenses() {
 
+    }
+
+    fun insertExpense() {
+        expenseRepository.insertExpense()
     }
 }

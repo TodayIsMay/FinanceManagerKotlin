@@ -1,27 +1,13 @@
 package db
 
-import com.zaxxer.hikari.HikariConfig
-import com.zaxxer.hikari.HikariDataSource
-import java.sql.Connection
-import java.sql.SQLException
+import org.postgresql.ds.PGSimpleDataSource
+import  javax.sql.DataSource
 
 object DataSource {
-    private val config = HikariConfig()
-    private var ds: HikariDataSource? = null
-
-    init {
-        config.jdbcUrl = "jdbc_url"
-        config.username = "database_username"
-        config.password = "database_password"
-        config.addDataSourceProperty("cachePrepStmts", "true")
-        config.addDataSourceProperty("prepStmtCacheSize", "250")
-        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048")
-        ds = HikariDataSource(config)
+    fun createDataSource(): DataSource {
+        val url = "jdbc:postgresql://db:5432/db?user=postgres&password=postgres"
+        val dataSource = PGSimpleDataSource()
+        dataSource.setUrl(url)
+        return dataSource
     }
-
-    @get:Throws(SQLException::class)
-    val connection: Connection
-        get() = ds!!.connection
-
-    val dataSource = ds
 }
