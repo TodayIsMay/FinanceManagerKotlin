@@ -14,7 +14,7 @@ class ExpenseService(val jdbcTemplate: JdbcTemplate) {
 
     }
 
-    fun insertExpense(expense: Expense) {
-        expenseRepository.insertExpense(expense)
+    fun insertExpense(expense: Expense): Expense {
+        return expenseRepository.insertExpense(expense)
     }
 }

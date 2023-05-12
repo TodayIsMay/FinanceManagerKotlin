@@ -20,6 +20,7 @@ services:
       - ./src:/opt/manager
     ports:
       - "8080:8080"
+      - "8081:8081"
     depends_on:
       - db
 volumes:

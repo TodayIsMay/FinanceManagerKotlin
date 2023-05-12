@@ -18,7 +18,7 @@ class ExpenseController(
 
     @GetMapping("/version")
     fun getVersion(): String {
-        return "12.05.2023 14:47"
+        return "13.05.2023 01:16"
     }
 
     @GetMapping("/expenses")
@@ -29,12 +29,11 @@ class ExpenseController(
     @GetMapping("/expenses/time")
     fun getExpensesInRange(@RequestParam(required = true) from: LocalDateTime,
                            @RequestParam(required = true) to: LocalDateTime): List<Expense> {
-        return listOf(Expense(12.0, "comment", 1))
+        return listOf(Expense(12.0, "comment", 1, LocalDateTime.now()))
     }
 
     @PostMapping("/insert")
     fun insert(@RequestBody expense: Expense): Expense {
-        expenseService.insertExpense(expense)
-        return expense
+        return expenseService.insertExpense(expense)
     }
 }
