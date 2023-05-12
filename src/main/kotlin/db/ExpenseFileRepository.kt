@@ -1,13 +1,13 @@
 package db
 
-import ExpenseMatcher
+import ExpenseMapper
 import entities.Expense
 import org.springframework.jdbc.core.JdbcTemplate
 import java.io.File
 import java.time.LocalDateTime
 
 class ExpenseFileRepository(private val jdbcTemplate: JdbcTemplate) {
-    private val expenseMather = ExpenseMatcher()
+    private val expenseMather = ExpenseMapper()
     private val file: File = File("src/main/resources/Database")
 
     fun getExpenses(): List<Expense> {
@@ -38,11 +38,11 @@ class ExpenseFileRepository(private val jdbcTemplate: JdbcTemplate) {
             }
         }
         val result = HashSet<Expense>()
-        for (expense in expenses) {
-            if (expense.date.isAfter(from) && expense.date.isBefore(to)) {
-                result.add(expense)
-            }
-        }
+//        for (expense in expenses) {
+//            if (expense.date.isAfter(from) && expense.date.isBefore(to)) {
+//                result.add(expense)
+//            }
+//        }
         return result
     }
 

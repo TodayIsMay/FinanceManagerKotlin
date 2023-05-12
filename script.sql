@@ -7,4 +7,5 @@ CREATE TABLE IF NOT EXISTS expenses
 comment CHARACTER VARYING (100),
 amount INTEGER,
 category_id INTEGER,
+expense_timestamp TIMESTAMP,
 CONSTRAINT FK_EXPENSE_ON_CATEGORY_ID FOREIGN KEY (category_id) REFERENCES categories (id));

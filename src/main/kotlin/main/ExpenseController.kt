@@ -1,24 +1,25 @@
 package main
 
-import db.DataSource
 import db.ExpenseFileRepository
 import entities.Expense
-import org.springframework.jdbc.core.JdbcTemplate
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
-import repositories.ExpenseRepository
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.annotation.*
 import services.ExpenseService
 import java.time.LocalDateTime
 
 @RestController
 @RequestMapping
-class ExpenseController {
-    private final val dataSource: DataSource = DataSource
-    private final val jdbcTemplate: JdbcTemplate = JdbcTemplate(dataSource.createDataSource())
-    private val expenseFileDAO: ExpenseFileRepository = ExpenseFileRepository(jdbcTemplate)
-    private val expenseService: ExpenseService = ExpenseService(jdbcTemplate)
+class ExpenseController(
+    @Autowired
+    val managerBeans: ManagerBeans
+) {
+    private val expenseFileDAO: ExpenseFileRepository = ExpenseFileRepository(managerBeans.jdbcTemplate())
+    private val expenseService: ExpenseService = managerBeans.expenseService()
+
+    @GetMapping("/version")
+    fun getVersion(): String {
+        return "12.05.2023 14:47"
+    }
 
     @GetMapping("/expenses")
     fun getExpenses(): List<Expense> {
@@ -28,11 +29,12 @@ class ExpenseController {
     @GetMapping("/expenses/time")
     fun getExpensesInRange(@RequestParam(required = true) from: LocalDateTime,
                            @RequestParam(required = true) to: LocalDateTime): List<Expense> {
-        return listOf(Expense(12.0, "comment", LocalDateTime.now()))
+        return listOf(Expense(12.0, "comment", 1))
     }
 
-    @GetMapping("/insert")
-    fun insert() {
-        expenseService.insertExpense()
+    @PostMapping("/insert")
+    fun insert(@RequestBody expense: Expense): Expense {
+        expenseService.insertExpense(expense)
+        return expense
     }
 }

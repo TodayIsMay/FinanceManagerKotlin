@@ -3,7 +3,6 @@ package services
 import entities.Expense
 import org.springframework.jdbc.core.JdbcTemplate
 import repositories.ExpenseRepository
-import java.time.LocalDateTime
 
 class ExpenseService(val jdbcTemplate: JdbcTemplate) {
     val expenseRepository: ExpenseRepository = ExpenseRepository(jdbcTemplate)
@@ -15,7 +14,7 @@ class ExpenseService(val jdbcTemplate: JdbcTemplate) {
 
     }
 
-    fun insertExpense() {
-        expenseRepository.insertExpense()
+    fun insertExpense(expense: Expense) {
+        expenseRepository.insertExpense(expense)
     }
 }
