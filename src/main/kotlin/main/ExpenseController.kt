@@ -18,12 +18,12 @@ class ExpenseController(
 
     @GetMapping("/version")
     fun getVersion(): String {
-        return "13.05.2023 01:16"
+        return "15.05.2023 23:50"
     }
 
     @GetMapping("/expenses")
     fun getExpenses(): List<Expense> {
-        return expenseFileDAO.getExpenses()
+        return expenseService.getExpenses()
     }
 
     @GetMapping("/expenses/time")
