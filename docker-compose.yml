@@ -2,7 +2,7 @@ version: "3.0"
 services:
   db:
     image: postgres:14-alpine
-    build: ./src/kotlin/db
+    build: ./src/main/kotlin/db
     volumes:
       - ./db_data/:/var/lib/postgresql/data
       - ./script.sql:/docker-entrypoint-initdb.d/script.sql
