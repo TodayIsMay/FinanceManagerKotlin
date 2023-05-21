@@ -4,8 +4,9 @@ import entities.Expense
 import org.springframework.jdbc.core.JdbcTemplate
 import repositories.ExpenseRepository
 
-class ExpenseService(val jdbcTemplate: JdbcTemplate) {
-    val expenseRepository: ExpenseRepository = ExpenseRepository(jdbcTemplate)
+class ExpenseService(jdbcTemplate: JdbcTemplate) {
+    private val expenseRepository: ExpenseRepository = ExpenseRepository(jdbcTemplate)
+
     fun getExpenses(): List<Expense> {
         return expenseRepository.getExpenses()
     }
