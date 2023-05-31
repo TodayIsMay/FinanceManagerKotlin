@@ -1,4 +1,4 @@
 package entities
 
-class Category(var name: String) {
+class Category(var id: Long, var name: String) {
 }

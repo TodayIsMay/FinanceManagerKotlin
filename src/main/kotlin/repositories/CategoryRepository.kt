@@ -10,10 +10,22 @@ class CategoryRepository(private val jdbcTemplate: JdbcTemplate) {
         val sql = "SELECT * FROM categories"
         val list = jdbcTemplate.query(sql) { rs: ResultSet, _: Int ->
             Category(
+                rs.getLong("id"),
                 rs.getString("name")
             )
         }
         return list
+    }
+
+    fun getCategoryById(id: Long): Category {
+        val sql = "SELECT * FROM categories WHERE id = $id"
+        val category = jdbcTemplate.query(sql) { rs: ResultSet, _: Int ->
+            Category(
+                rs.getLong("id"),
+                rs.getString("name")
+            )
+        }[0]
+        return category
     }
 
     fun addCategory(category: Category): Category {

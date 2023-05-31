@@ -15,6 +15,11 @@ class CategoryService(jdbcTemplate: JdbcTemplate) {
         return categoryRepository.getCategories()
     }
 
+    fun getCategoryById(id: Long): Category {
+        log.info("Trying to get category with id $id")
+        return categoryRepository.getCategoryById(id)
+    }
+
     fun addCategory(category: Category): Category {
         log.info("Adding category: $category")
         return categoryRepository.addCategory(category)

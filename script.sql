@@ -8,4 +8,5 @@ comment CHARACTER VARYING (100),
 amount NUMERIC,
 category_id INTEGER,
 expense_timestamp TIMESTAMP,
+creation_timestamp TIMESTAMP,
 CONSTRAINT FK_EXPENSE_ON_CATEGORY_ID FOREIGN KEY (category_id) REFERENCES categories (id));

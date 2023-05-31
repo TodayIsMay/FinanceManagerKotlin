@@ -1,11 +1,19 @@
 import entities.Expense
-import java.time.LocalDateTime
+import entities.dto.ExpenseDto
+import main.ManagerBeans
 
-class ExpenseMapper {
-    fun matchStringToExpense(stringExpense: String): Expense {
-        if (stringExpense.isBlank()) throw IllegalArgumentException("Empty string")
+class ExpenseMapper(
+    managerBeans: ManagerBeans
+) {
 
-        val array = stringExpense.split(",")
-        return Expense(array[2].toDouble(), array[1], 1, LocalDateTime.now())
+    private val categoryService = managerBeans.categoryService()
+
+    fun toExpenseDto(expense: Expense): ExpenseDto {
+        val category = categoryService.getCategoryById(expense.categoryId)
+        var comment = ""
+        if (expense.comment != null) {
+            comment = expense.comment!!
+        }
+        return ExpenseDto(expense.id, expense.amount, category.name, comment, expense.date)
     }
 }

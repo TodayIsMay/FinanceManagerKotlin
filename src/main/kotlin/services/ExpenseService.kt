@@ -15,6 +15,11 @@ class ExpenseService(jdbcTemplate: JdbcTemplate) {
         return expenseRepository.getExpenses()
     }
 
+    fun getLastInsertedExpense(): Expense {
+        log.info("Trying to get last inserted expense...")
+        return expenseRepository.getLastInsertedExpense()
+    }
+
     fun sortExpenses() {
 
     }

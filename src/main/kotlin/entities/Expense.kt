@@ -4,8 +4,10 @@ import org.springframework.lang.Nullable
 import java.time.LocalDateTime
 
 data class Expense(
+    var id: Long,
     var amount: Double,
     var comment: String?,
-    var categoryId: Int,
+    var categoryId: Long,
+    @Nullable var creationTimestamp: LocalDateTime = LocalDateTime.now(),
     @Nullable val date: LocalDateTime = LocalDateTime.now()
 )
