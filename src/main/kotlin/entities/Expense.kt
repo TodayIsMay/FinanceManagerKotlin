@@ -5,6 +5,7 @@ import java.time.LocalDateTime
 
 data class Expense(
     var id: Long,
+    var userId: Long,
     var amount: Double,
     var comment: String?,
     var categoryId: Long,

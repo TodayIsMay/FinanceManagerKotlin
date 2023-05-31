@@ -10,6 +10,23 @@ class ExpenseRepository(private val jdbcTemplate: JdbcTemplate) {
         val list = jdbcTemplate.query(sql) { rs: ResultSet, _: Int ->
             Expense(
                 rs.getLong("id"),
+                rs.getLong("user_id"),
+                rs.getDouble("amount"),
+                rs.getString("comment"),
+                rs.getLong("category_id"),
+                rs.getTimestamp("creation_timestamp").toLocalDateTime(),
+                rs.getTimestamp("expense_timestamp").toLocalDateTime()
+            )
+        }
+        return list
+    }
+
+    fun getExpensesByUser(userId: Long): List<Expense> {
+        val sql = "SELECT * FROM expenses WHERE user_id = $userId ORDER BY expense_timestamp DESC"
+        val list = jdbcTemplate.query(sql) { rs: ResultSet, _: Int ->
+            Expense(
+                rs.getLong("id"),
+                rs.getLong("user_id"),
                 rs.getDouble("amount"),
                 rs.getString("comment"),
                 rs.getLong("category_id"),
@@ -25,6 +42,7 @@ class ExpenseRepository(private val jdbcTemplate: JdbcTemplate) {
         val expense = jdbcTemplate.query(sql) { rs: ResultSet, _: Int ->
             Expense(
                 rs.getLong("id"),
+                rs.getLong("user_id"),
                 rs.getDouble("amount"),
                 rs.getString("comment"),
                 rs.getLong("category_id"),
@@ -37,12 +55,13 @@ class ExpenseRepository(private val jdbcTemplate: JdbcTemplate) {
 
     fun insertExpense(expense: Expense): Expense {
         jdbcTemplate.update(
-            "INSERT INTO expenses (comment, amount, category_id, expense_timestamp, creation_timestamp) VALUES (?, ?, ?, ?, ?)",
+            "INSERT INTO expenses (comment, amount, category_id, expense_timestamp, creation_timestamp, user_id) VALUES (?, ?, ?, ?, ?, ?)",
             expense.comment,
             expense.amount,
             expense.categoryId,
             expense.date,
-            expense.creationTimestamp
+            expense.creationTimestamp,
+            expense.userId
         )
         return expense;
     }

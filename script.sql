@@ -4,9 +4,23 @@ name CHARACTER VARYING (100));
 
 CREATE TABLE IF NOT EXISTS expenses
 (id SERIAL PRIMARY KEY,
+user_id INTEGER,
 comment CHARACTER VARYING (100),
 amount NUMERIC,
 category_id INTEGER,
 expense_timestamp TIMESTAMP,
 creation_timestamp TIMESTAMP,
 CONSTRAINT FK_EXPENSE_ON_CATEGORY_ID FOREIGN KEY (category_id) REFERENCES categories (id));
+
+CREATE TABLE users
+(id serial primary key,
+login character varying (100),
+password character varying (100),
+device_id integer);
+
+CREATE TABLE IF NOT EXISTS user_devices
+(id SERIAL PRIMARY KEY,
+user_id INTEGER,
+CONSTRAINT FK_DEVICE_ON_USER_ID FOREIGN KEY (user_id) REFERENCES users (id));
+
+alter table users add constraint FK_USER_ON_DEVICE_ID FOREIGN KEY (device_id) REFERENCES user_devices (id);

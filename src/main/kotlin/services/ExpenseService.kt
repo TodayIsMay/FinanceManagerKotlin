@@ -20,6 +20,10 @@ class ExpenseService(jdbcTemplate: JdbcTemplate) {
         return expenseRepository.getLastInsertedExpense()
     }
 
+    fun getExpensesByUser(userId: Long): List<Expense> {
+        return expenseRepository.getExpensesByUser(userId)
+    }
+
     fun sortExpenses() {
 
     }

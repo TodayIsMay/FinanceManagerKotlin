@@ -18,12 +18,22 @@ class ExpenseController(
 
     @GetMapping("/version")
     fun getVersion(): String {
-        return "21.05.2023 20:33"
+        return "31.05.2023 16:33"
     }
 
     @GetMapping("/expenses")
     fun getExpenses(): List<ExpenseDto> {
         val expenses = expenseService.getExpenses()
+        val expenseDto = mutableListOf<ExpenseDto>()
+        for (expense in expenses) {
+            expenseDto.add(expenseMapper.toExpenseDto(expense))
+        }
+        return expenseDto
+    }
+
+    @GetMapping("expenses/{userId}")
+    fun getExpensesByUser(@PathVariable userId: Long): List<ExpenseDto> {
+        val expenses = expenseService.getExpensesByUser(userId)
         val expenseDto = mutableListOf<ExpenseDto>()
         for (expense in expenses) {
             expenseDto.add(expenseMapper.toExpenseDto(expense))
