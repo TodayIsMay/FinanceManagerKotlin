@@ -12,7 +12,7 @@ class UserRepository(private val jdbcTemplate: JdbcTemplate) {
     }
 
     fun findUserByLogin(login: String): User {
-        val sql = "SELECT * FROM users where login = $login"
+        val sql = "SELECT * FROM users where login = '$login'"
         val user = jdbcTemplate.query(sql) { rs: ResultSet, _: Int ->
             User(
                 rs.getLong("id"),

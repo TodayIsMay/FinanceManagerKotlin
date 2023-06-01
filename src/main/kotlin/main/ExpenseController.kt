@@ -18,7 +18,7 @@ class ExpenseController(
 
     @GetMapping("/version")
     fun getVersion(): String {
-        return "31.05.2023 16:33"
+        return "01.06.2023 13:57"
     }
 
     @GetMapping("/expenses")
