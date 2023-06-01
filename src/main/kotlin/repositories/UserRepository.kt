@@ -1,6 +1,5 @@
 package repositories
 
-import entities.Expense
 import entities.User
 import org.springframework.jdbc.core.JdbcTemplate
 import java.sql.ResultSet
@@ -18,7 +17,7 @@ class UserRepository(private val jdbcTemplate: JdbcTemplate) {
                 rs.getLong("id"),
                 rs.getString("login"),
                 rs.getString("password"),
-                rs.getLong("device_id")
+                rs.getString("device_id")
             )
         }[0]
         return user

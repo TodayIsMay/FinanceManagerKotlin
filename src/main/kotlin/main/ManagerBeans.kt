@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.jdbc.core.JdbcTemplate
 import services.CategoryService
+import services.DeviceService
 import services.ExpenseService
 import services.UserService
 
@@ -36,5 +37,10 @@ class ManagerBeans {
     @Bean
     fun userService(): UserService {
         return UserService(jdbcTemplate())
+    }
+
+    @Bean
+    fun deviceService(): DeviceService {
+        return DeviceService(jdbcTemplate())
     }
 }

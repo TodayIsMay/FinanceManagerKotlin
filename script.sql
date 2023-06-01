@@ -22,5 +22,3 @@ CREATE TABLE IF NOT EXISTS user_devices
 (id SERIAL PRIMARY KEY,
 user_id INTEGER,
 CONSTRAINT FK_DEVICE_ON_USER_ID FOREIGN KEY (user_id) REFERENCES users (id));
-
-alter table users add constraint FK_USER_ON_DEVICE_ID FOREIGN KEY (device_id) REFERENCES user_devices (id);
