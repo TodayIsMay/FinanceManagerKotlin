@@ -43,7 +43,7 @@ class ExpenseController(
         return expenseDto
     }
 
-    @GetMapping("expenses/{userLogin}")
+    @GetMapping("expenses/user/{userLogin}")
     fun getExpensesByUserLogin(@PathVariable userLogin: String): List<ExpenseDto> {
         val user = userService.findUserByLogin(userLogin)
         val expenses = expenseService.getExpensesByUser(user.id)
