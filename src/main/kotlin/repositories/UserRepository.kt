@@ -22,4 +22,17 @@ class UserRepository(private val jdbcTemplate: JdbcTemplate) {
         }[0]
         return user
     }
+
+    fun findUserById(id: Long): User {
+        val sql = "SELECT * FROM users where id = $id"
+        val user = jdbcTemplate.query(sql) { rs: ResultSet, _: Int ->
+            User(
+                rs.getLong("id"),
+                rs.getString("login"),
+                rs.getString("password"),
+                rs.getString("device_id")
+            )
+        }[0]
+        return user
+    }
 }

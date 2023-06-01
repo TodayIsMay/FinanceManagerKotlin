@@ -16,7 +16,7 @@ CREATE TABLE users
 (id serial primary key,
 login character varying (100),
 password character varying (100),
-device_id integer);
+device_id character varying (100));
 
 CREATE TABLE IF NOT EXISTS user_devices
 (id SERIAL PRIMARY KEY,

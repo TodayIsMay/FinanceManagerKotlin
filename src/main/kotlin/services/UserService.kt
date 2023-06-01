@@ -17,4 +17,8 @@ class UserService(jdbcTemplate: JdbcTemplate) {
     fun findUserByLogin(login: String): User {
         return userRepository.findUserByLogin(login)
     }
+
+    fun findUserById(id: Long): User {
+        return userRepository.findUserById(id)
+    }
 }

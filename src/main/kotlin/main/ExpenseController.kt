@@ -6,6 +6,7 @@ import entities.dto.ExpenseDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import services.ExpenseService
+import services.UserService
 
 @RestController
 @RequestMapping
@@ -14,6 +15,7 @@ class ExpenseController(
     val managerBeans: ManagerBeans
 ) {
     private val expenseService: ExpenseService = managerBeans.expenseService()
+    private val userService: UserService = managerBeans.userService()
     private val expenseMapper: ExpenseMapper = ExpenseMapper(managerBeans)
 
     @GetMapping("/version")
@@ -41,14 +43,27 @@ class ExpenseController(
         return expenseDto
     }
 
-//    @GetMapping("/expenses/time")
-//    fun getExpensesInRange(@RequestParam(required = true) from: LocalDateTime,
-//                           @RequestParam(required = true) to: LocalDateTime): List<Expense> {
-//        return listOf(Expense(12.0, "comment", 1, LocalDateTime.now()))
-//    }
+    @GetMapping("expenses/{userLogin}")
+    fun getExpensesByUserLogin(@PathVariable userLogin: String): List<ExpenseDto> {
+        val user = userService.findUserByLogin(userLogin)
+        val expenses = expenseService.getExpensesByUser(user.id)
+        val expenseDto = mutableListOf<ExpenseDto>()
+        for (expense in expenses) {
+            expenseDto.add(expenseMapper.toExpenseDto(expense))
+        }
+        return expenseDto
+    }
 
     @PostMapping("/insert")
     fun insert(@RequestBody expense: Expense): ExpenseDto {
+        expenseService.insertExpense(expense)
+        return expenseMapper.toExpenseDto(expenseService.getLastInsertedExpense())
+    }
+
+    @PostMapping("/insert/{userLogin}")
+    fun insertByLogin(@PathVariable userLogin: String, @RequestBody expense: Expense): ExpenseDto {
+        val user = userService.findUserByLogin(userLogin)
+        expense.userId = user.id
         expenseService.insertExpense(expense)
         return expenseMapper.toExpenseDto(expenseService.getLastInsertedExpense())
     }
