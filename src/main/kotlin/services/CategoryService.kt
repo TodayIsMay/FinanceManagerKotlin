@@ -1,6 +1,7 @@
 package services
 
 import entities.Category
+import exceptions.UserNotAuthorizedException
 import org.springframework.jdbc.core.JdbcTemplate
 import repositories.CategoryRepository
 import java.util.logging.Logger
@@ -20,8 +21,12 @@ class CategoryService(jdbcTemplate: JdbcTemplate) {
         return categoryRepository.getCategoryById(id)
     }
 
-    fun addCategory(category: Category): Category {
+    fun addCategory(category: Category, auth: String): Category {
+        if (auth.isNullOrBlank()) {
+            throw UserNotAuthorizedException("Only authorized users can add expenses")
+        }
         log.info("Adding category: $category")
-        return categoryRepository.addCategory(category)
+        categoryRepository.addCategory(category)
+        return categoryRepository.getLastInsertedCategory()
     }
 }

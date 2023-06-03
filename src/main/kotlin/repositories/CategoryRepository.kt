@@ -28,6 +28,17 @@ class CategoryRepository(private val jdbcTemplate: JdbcTemplate) {
         return category
     }
 
+    fun getLastInsertedCategory(): Category {
+        val sql = "SELECT * FROM categories ORDER BY id DESC LIMIT 1"
+        val category = jdbcTemplate.query(sql) { rs: ResultSet, _: Int ->
+            Category(
+                rs.getLong("id"),
+                rs.getString("name")
+            )
+        }[0]
+        return category
+    }
+
     fun addCategory(category: Category): Category {
         jdbcTemplate.update(
             "INSERT INTO categories (name) VALUES (?)",

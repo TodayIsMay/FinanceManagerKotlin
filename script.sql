@@ -22,3 +22,13 @@ CREATE TABLE IF NOT EXISTS user_devices
 (id SERIAL PRIMARY KEY,
 user_id INTEGER,
 CONSTRAINT FK_DEVICE_ON_USER_ID FOREIGN KEY (user_id) REFERENCES users (id));
+
+create table principals
+id serial primary key,
+username character varying(100),
+password character varying(100));
+
+create table roles (
+id serial primary key,
+name character varying(100),
+user_id integer)
