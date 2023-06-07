@@ -3,8 +3,10 @@ package repositories
 import entities.Category
 import org.springframework.jdbc.core.JdbcTemplate
 import java.sql.ResultSet
+import java.util.logging.Logger
 
 class CategoryRepository(private val jdbcTemplate: JdbcTemplate) {
+    private val log = Logger.getLogger(this.javaClass.name)
 
     fun getCategories(): List<Category> {
         val sql = "SELECT * FROM categories"
@@ -45,5 +47,15 @@ class CategoryRepository(private val jdbcTemplate: JdbcTemplate) {
             category.name
         )
         return category
+    }
+
+    fun deleteCategory(id: Long): String {
+        val sql = "DELETE FROM categories WHERE id = (?)"
+        try {
+            jdbcTemplate.update(sql, id)
+        } catch (e: Exception) {
+            log.warning("There was an exception during deleting category. :(")
+        }
+        return "Category with id $id was deleted!"
     }
 }
