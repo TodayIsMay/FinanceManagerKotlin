@@ -2,6 +2,7 @@ package repositories
 
 import entities.Category
 import org.springframework.jdbc.core.JdbcTemplate
+import java.lang.IllegalArgumentException
 import java.sql.ResultSet
 import java.util.logging.Logger
 
@@ -19,14 +20,14 @@ class CategoryRepository(private val jdbcTemplate: JdbcTemplate) {
         return list
     }
 
-    fun getCategoryById(id: Long): Category {
+    fun getCategoryById(id: Long): List<Category> {
         val sql = "SELECT * FROM categories WHERE id = $id"
         val category = jdbcTemplate.query(sql) { rs: ResultSet, _: Int ->
             Category(
                 rs.getLong("id"),
                 rs.getString("name")
             )
-        }[0]
+        }
         return category
     }
 
@@ -55,6 +56,7 @@ class CategoryRepository(private val jdbcTemplate: JdbcTemplate) {
             jdbcTemplate.update(sql, id)
         } catch (e: Exception) {
             log.warning("There was an exception during deleting category. :(")
+            throw exceptions.IllegalArgumentException(e.message!!)
         }
         return "Category with id $id was deleted!"
     }

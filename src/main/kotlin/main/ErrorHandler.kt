@@ -28,9 +28,17 @@ class ErrorHandler: ResponseEntityExceptionHandler() {
     }
 
     @ExceptionHandler(IllegalAccessException::class)
-    fun handleIllegalArgumentsException(e: IllegalArgumentException): ResponseEntity<ErrorResponse> {
+    fun handleIllegalAccessException(e: IllegalArgumentException): ResponseEntity<ErrorResponse> {
         val error =  ErrorResponse(
             HttpStatus.NOT_ACCEPTABLE, e.message!!
+        )
+        return ResponseEntity(error, error.status)
+    }
+
+    @ExceptionHandler(exceptions.IllegalArgumentException::class)
+    fun handleIllegalArgumentsException(e: exceptions.IllegalArgumentException): ResponseEntity<ErrorResponse> {
+        val error =  ErrorResponse(
+            HttpStatus.CONFLICT, e.message
         )
         return ResponseEntity(error, error.status)
     }

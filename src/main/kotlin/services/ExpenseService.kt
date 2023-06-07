@@ -43,6 +43,14 @@ class ExpenseService(jdbcTemplate: JdbcTemplate) {
         return expenseRepository.insertExpense(expense)
     }
 
+    fun deleteExpense(id: Long, auth: String): String {
+        if (auth.isNullOrBlank()) {
+            throw UserNotAuthorizedException("Who are you? I didn't call you!")
+        }
+        log.info("Deleting expense with id $id")
+        return expenseRepository.deleteExpense(id)
+    }
+
     private fun checkPrincipal(userId: Long?, auth: String) {
         if (auth.isNullOrBlank()) {
             throw UserNotAuthorizedException("Who are you? I didn't call you!")

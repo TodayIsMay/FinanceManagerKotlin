@@ -63,6 +63,12 @@ class ExpenseRepository(private val jdbcTemplate: JdbcTemplate) {
             expense.creationTimestamp,
             expense.userId
         )
-        return expense;
+        return expense
+    }
+
+    fun deleteExpense(id: Long): String {
+        val sql = "DELETE FROM expenses WHERE id = (?)"
+        jdbcTemplate.update(sql, id)
+        return "Expense with id $id was deleted!"
     }
 }

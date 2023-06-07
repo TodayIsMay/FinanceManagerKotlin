@@ -1,6 +1,8 @@
 package services
 
 import entities.Category
+import exceptions.IllegalArgumentException
+import exceptions.NoSuchEntityException
 import exceptions.UserNotAuthorizedException
 import org.springframework.jdbc.core.JdbcTemplate
 import repositories.CategoryRepository
@@ -18,7 +20,16 @@ class CategoryService(jdbcTemplate: JdbcTemplate) {
 
     fun getCategoryById(id: Long): Category {
         log.info("Trying to get category with id $id")
-        return categoryRepository.getCategoryById(id)
+        val category = categoryRepository.getCategoryById(id)
+        if (category.isEmpty()) {
+            log.warning("Such category is not exists!")
+            throw NoSuchEntityException("Such category is not exists!")
+        }
+        if (category.size > 1) {
+            log.warning("There are more than 1 category with id $id. :/")
+            throw IllegalArgumentException("There are more than 1 category with id $id.")
+        }
+        return category[0]
     }
 
     fun addCategory(category: Category, auth: String): Category {

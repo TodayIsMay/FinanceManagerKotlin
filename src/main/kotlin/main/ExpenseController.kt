@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*
 import services.ExpenseService
 import services.PrincipalService
 import services.UserService
+import java.util.logging.Logger
 
 @RestController
 @RequestMapping
@@ -17,8 +18,9 @@ class ExpenseController(
     @Autowired
     val securityConfig: SecurityConfig
 ) {
+    private val log = Logger.getLogger(this.javaClass.name)
+
     private val expenseService: ExpenseService = managerBeans.expenseService()
-    private val userService: UserService = managerBeans.userService()
     private val principalService: PrincipalService = securityConfig.userDetailsService()
     private val expenseMapper: ExpenseMapper = ExpenseMapper(managerBeans)
 
@@ -73,5 +75,11 @@ class ExpenseController(
         expense.userId = user.id
         expenseService.insertExpense(expense, auth)
         return expenseMapper.toExpenseDto(expenseService.getLastInsertedExpense())
+    }
+
+    @DeleteMapping("expenses/delete/{id}")
+    fun deleteExpense(@PathVariable id: Long, @RequestHeader("Authorization") auth: String): String {
+        log.info("Received expense id: $id")
+        return expenseService.deleteExpense(id, auth)
     }
 }
