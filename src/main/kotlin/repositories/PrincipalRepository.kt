@@ -18,6 +18,7 @@ class PrincipalRepository(private val jdbcTemplate: JdbcTemplate) {
                 rs.getLong("id"),
                 rs.getString("username"),
                 rs.getString("password"),
+                rs.getDouble("available_funds"),
                 mutableSetOf()
             )
         }
@@ -31,9 +32,25 @@ class PrincipalRepository(private val jdbcTemplate: JdbcTemplate) {
                 rs.getLong("id"),
                 rs.getString("username"),
                 rs.getString("password"),
+                rs.getDouble("available_funds"),
                 mutableSetOf()
             )
         }
         return set
+    }
+
+    fun setAvailableFundsToPrincipal(id: Long, availableFunds: Double): Principal {
+        val updateSql = "UPDATE principals SET available_funds = ? WHERE id = ?"
+        jdbcTemplate.update(updateSql, availableFunds, id)
+        val querySql = "SELECT * FROM principals WHERE id = $id"
+        return jdbcTemplate.query(querySql) { rs: ResultSet, _: Int ->
+            Principal(
+                rs.getLong("id"),
+                rs.getString("username"),
+                rs.getString("password"),
+                rs.getDouble("available_funds"),
+                mutableSetOf()
+            )
+        }[0]
     }
 }

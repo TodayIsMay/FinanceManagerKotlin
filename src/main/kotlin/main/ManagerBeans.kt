@@ -4,10 +4,7 @@ import org.postgresql.ds.PGSimpleDataSource
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.jdbc.core.JdbcTemplate
-import services.CategoryService
-import services.DeviceService
-import services.ExpenseService
-import services.UserService
+import services.*
 
 @Configuration
 class ManagerBeans {
@@ -42,5 +39,10 @@ class ManagerBeans {
     @Bean
     fun deviceService(): DeviceService {
         return DeviceService(jdbcTemplate())
+    }
+
+    @Bean
+    fun incomeService(): IncomeService {
+        return IncomeService(jdbcTemplate())
     }
 }

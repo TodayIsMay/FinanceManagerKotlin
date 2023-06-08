@@ -21,6 +21,21 @@ class ExpenseRepository(private val jdbcTemplate: JdbcTemplate) {
         return list
     }
 
+    fun getExpenseById(id: Long): List<Expense> {
+        val sql = "SELECT * FROM expenses WHERE id = $id"
+        return jdbcTemplate.query(sql) { rs: ResultSet, _: Int ->
+            Expense(
+                rs.getLong("id"),
+                rs.getLong("user_id"),
+                rs.getDouble("amount"),
+                rs.getString("comment"),
+                rs.getLong("category_id"),
+                rs.getTimestamp("creation_timestamp").toLocalDateTime(),
+                rs.getTimestamp("expense_timestamp").toLocalDateTime()
+            )
+        }
+    }
+
     fun getExpensesByUser(userId: Long): List<Expense> {
         val sql = "SELECT * FROM expenses WHERE user_id = $userId ORDER BY expense_timestamp DESC"
         val list = jdbcTemplate.query(sql) { rs: ResultSet, _: Int ->

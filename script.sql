@@ -32,3 +32,13 @@ create table roles (
 id serial primary key,
 name character varying(100),
 user_id integer)
+
+CREATE TABLE IF NOT EXISTS incomes
+(id SERIAL PRIMARY KEY,
+user_id INTEGER,
+comment CHARACTER VARYING (100),
+amount NUMERIC,
+category_id INTEGER,
+expense_timestamp TIMESTAMP,
+creation_timestamp TIMESTAMP,
+CONSTRAINT FK_INCOME_ON_CATEGORY_ID FOREIGN KEY (category_id) REFERENCES categories (id));

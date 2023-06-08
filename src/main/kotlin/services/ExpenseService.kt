@@ -40,6 +40,9 @@ class ExpenseService(jdbcTemplate: JdbcTemplate) {
     fun insertExpense(expense: Expense, auth: String): Expense {
         checkPrincipal(expense.userId, auth)
         log.info("Inserting expense $expense")
+        val principal = principalRepository.findById(expense.userId!!)
+        val resultAvailableFunds = principal[0].availableFunds - expense.amount
+        principalRepository.setAvailableFundsToPrincipal(principal[0].id!!, resultAvailableFunds)
         return expenseRepository.insertExpense(expense)
     }
 
@@ -48,6 +51,18 @@ class ExpenseService(jdbcTemplate: JdbcTemplate) {
             throw UserNotAuthorizedException("Who are you? I didn't call you!")
         }
         log.info("Deleting expense with id $id")
+        val expenses = expenseRepository.getExpenseById(id)
+        val expense: Expense?
+        if (expenses.size > 1) {
+            throw exceptions.IllegalArgumentException("There are more than 1 expense with such id!")
+        } else if (expenses.isEmpty()) {
+            throw exceptions.IllegalArgumentException("There no any expense with such id. :(")
+        } else {
+            expense = expenses[0]
+        }
+        val principal = principalRepository.findById(expense.userId!!)
+        val resultAvailableFunds = principal[0].availableFunds + expense.amount
+        principalRepository.setAvailableFundsToPrincipal(expense.userId!!, resultAvailableFunds)
         return expenseRepository.deleteExpense(id)
     }
 
