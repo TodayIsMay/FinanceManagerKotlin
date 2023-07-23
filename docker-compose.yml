@@ -8,8 +8,8 @@ services:
       - ./script.sql:/docker-entrypoint-initdb.d/script.sql
     environment:
       POSTGRES_DB: db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postges
+      POSTGRES_USER: manager
+      POSTGRES_PASSWORD: fx9@CyVXH1
     ports:
       - "5432:5432"
 
