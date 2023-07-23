@@ -31,7 +31,7 @@ password character varying(100));
 create table roles (
 id serial primary key,
 name character varying(100),
-user_id integer)
+user_id integer);
 
 CREATE TABLE IF NOT EXISTS incomes
 (id SERIAL PRIMARY KEY,
