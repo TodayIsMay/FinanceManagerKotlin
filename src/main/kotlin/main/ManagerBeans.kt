@@ -11,7 +11,7 @@ class ManagerBeans {
 
     @Bean
     fun createDataSource(): javax.sql.DataSource {
-        val url = "jdbc:postgresql://db:5432/db?user=manager&password=fx9@CyVXH1"
+        val url = "jdbc:postgresql://db:5432/db?user=postgres&password=postgres"
         val dataSource = PGSimpleDataSource()
         dataSource.setUrl(url)
         return dataSource
