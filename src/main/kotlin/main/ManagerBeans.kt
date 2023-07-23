@@ -46,8 +46,8 @@ class ManagerBeans {
         return IncomeService(jdbcTemplate())
     }
 
-    @Bean
-    fun transactionService(): TransactionService {
-        return TransactionService(jdbcTemplate())
-    }
+//    @Bean
+//    fun transactionService(): TransactionService {
+//        return TransactionService(jdbcTemplate())
+//    }
 }
