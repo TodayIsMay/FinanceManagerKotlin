@@ -21,6 +21,12 @@ class CategoryController(
         return result
     }
 
+    @GetMapping("/categories/{id}")
+    fun getCategoryById(@PathVariable id: Long): Category {
+        log.info("Trying to find category with id $id")
+        return categoryService.getCategoryById(id)
+    }
+
     @PostMapping("/categories/insert")
     fun addCategory(@RequestBody category: Category, @RequestHeader("Authorization") auth: String): Category {
         log.info("Category to add: $category")

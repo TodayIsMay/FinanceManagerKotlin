@@ -1,5 +1,6 @@
 package main
 
+import exceptions.NoSuchEntityException
 import exceptions.UserNotAuthorizedException
 import exceptions.WrongPasswordException
 import org.springframework.http.HttpStatus
@@ -39,6 +40,14 @@ class ErrorHandler: ResponseEntityExceptionHandler() {
     fun handleIllegalArgumentsException(e: exceptions.IllegalArgumentException): ResponseEntity<ErrorResponse> {
         val error =  ErrorResponse(
             HttpStatus.CONFLICT, e.message
+        )
+        return ResponseEntity(error, error.status)
+    }
+
+    @ExceptionHandler(NoSuchEntityException::class)
+    fun handleNoSuchEntityException(e: NoSuchEntityException): ResponseEntity<ErrorResponse> {
+        val error =  ErrorResponse(
+            HttpStatus.NOT_FOUND, e.message
         )
         return ResponseEntity(error, error.status)
     }
