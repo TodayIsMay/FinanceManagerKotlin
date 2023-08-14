@@ -7,8 +7,8 @@ import java.sql.ResultSet
 class PrincipalRepository(private val jdbcTemplate: JdbcTemplate) {
 
     fun save(principal: Principal) {
-        val sql = "INSERT INTO principals (username, password) VALUES (?, ?)"
-        jdbcTemplate.update(sql, principal.username, principal.password)
+        val sql = "INSERT INTO principals (username, password, salt) VALUES (?, ?, ?)"
+        jdbcTemplate.update(sql, principal.username, principal.password, principal.salt)
     }
 
     fun findByUserName(username: String): List<Principal> {
@@ -18,6 +18,7 @@ class PrincipalRepository(private val jdbcTemplate: JdbcTemplate) {
                 rs.getLong("id"),
                 rs.getString("username"),
                 rs.getString("password"),
+                rs.getString("salt"),
                 rs.getDouble("available_funds"),
                 mutableSetOf()
             )
@@ -32,6 +33,7 @@ class PrincipalRepository(private val jdbcTemplate: JdbcTemplate) {
                 rs.getLong("id"),
                 rs.getString("username"),
                 rs.getString("password"),
+                rs.getString("salt"),
                 rs.getDouble("available_funds"),
                 mutableSetOf()
             )
@@ -48,6 +50,7 @@ class PrincipalRepository(private val jdbcTemplate: JdbcTemplate) {
                 rs.getLong("id"),
                 rs.getString("username"),
                 rs.getString("password"),
+                rs.getString("salt"),
                 rs.getDouble("available_funds"),
                 mutableSetOf()
             )

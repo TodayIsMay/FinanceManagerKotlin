@@ -2,9 +2,11 @@ package services
 
 import entities.Principal
 import entities.Role
+import main.PasswordEncryptor
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import repositories.PrincipalRepository
+import java.nio.charset.StandardCharsets
 import java.util.*
 import java.util.logging.Logger
 
@@ -14,6 +16,7 @@ class PrincipalService(
 ) {
     private val log = Logger.getLogger(this.javaClass.name)
     private val principalRepository = PrincipalRepository(jdbcTemplate)
+    private val encryptor = PasswordEncryptor()
 
     fun save(principal: Principal) {
         val principalFromDB = principalRepository.findByUserName(principal.username)
@@ -22,7 +25,10 @@ class PrincipalService(
             throw IllegalArgumentException("Such user is already in DB!")
         }
         principal.roles = Collections.singleton(Role(null, "ROLE_USER", null))
-        val password = bCryptPasswordEncoder.encode(principal.password)
+        //val password = bCryptPasswordEncoder.encode(principal.password)
+        val salt = encryptor.generateRandomSalt()
+        val password = encryptor.generateHash(principal.password, salt.toString())
+        principal.salt = salt.toString()
         principal.password = password
         principalRepository.save(principal)
     }
@@ -42,6 +48,19 @@ class PrincipalService(
 
     fun checkPrincipalPassword(principal: Principal): Boolean {
         val principalFromBD = findByUsername(principal.username)
-        return bCryptPasswordEncoder.matches(principal.password, principalFromBD.password)
+        val saltFromDB = principalFromBD.salt
+        if (saltFromDB == null) {
+            log.severe("Principal's salt is null. Principal = ${principal.username}")
+            throw exceptions.IllegalArgumentException("Principal's salt is null")
+        }
+        val password = encryptor.generateHash(principal.password, saltFromDB)
+        return password.equals(principalFromBD.password)
+    }
+
+    fun decodeBase64(base64: String): String {
+        val onlyPassword = base64.substring("Basic".length).trim()
+        val decodedBasic = Base64.getDecoder().decode(onlyPassword).toString(StandardCharsets.UTF_8)
+        val values = decodedBasic.split(":")
+        return values[1]
     }
 }
