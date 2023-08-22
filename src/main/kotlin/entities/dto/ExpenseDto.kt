@@ -2,6 +2,7 @@ package entities.dto
 
 import java.time.LocalDateTime
 
+@Deprecated(message = "Transaction entity is used instead of Expense and Income")
 class ExpenseDto(
     var id: Long,
     var amount: Double,

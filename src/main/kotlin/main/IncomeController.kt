@@ -1,8 +1,6 @@
 package main
 
-import entities.Expense
 import entities.Income
-import entities.dto.ExpenseDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import services.IncomeService

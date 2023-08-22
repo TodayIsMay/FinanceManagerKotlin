@@ -1,7 +1,9 @@
 package main
 
+import UserMapper
 import entities.Principal
 import entities.User
+import entities.dto.UserDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
@@ -11,7 +13,8 @@ class UserController(
     val securityConfig: SecurityConfig
 ) {
     private val userService = managerBeans.userService()
-    private val principalService = securityConfig.userDetailsService();
+    private val principalService = securityConfig.userDetailsService()
+    private val userMapper = UserMapper()
 
     @PostMapping("users/insert")
     fun insertUser(@RequestBody user: User): String {
@@ -24,8 +27,7 @@ class UserController(
     }
 
     @GetMapping("users/{login}")
-    fun findUserByLogin(@PathVariable login: String): Principal {
-        //return userService.findUserByLogin(login)
-        return principalService.findByUsername(login)
+    fun findUserByLogin(@PathVariable login: String): UserDto {
+        return userMapper.toUserDto(principalService.findByUsername(login))
     }
 }
