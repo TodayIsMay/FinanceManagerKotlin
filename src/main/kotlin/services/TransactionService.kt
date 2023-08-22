@@ -19,6 +19,7 @@ class TransactionService(jdbcTemplate: JdbcTemplate) {
     private val encryptor = PasswordEncryptor()
     private val transactionRepository: TransactionRepository = TransactionRepository(jdbcTemplate)
     private val principalRepository: PrincipalRepository = PrincipalRepository(jdbcTemplate)
+    private val categoryService: CategoryService = CategoryService(jdbcTemplate)
 
     fun getTransactionsByUserLogin(userLogin: String, auth: String): List<Transaction> {
         checkAuth(userLogin, auth)
@@ -38,6 +39,9 @@ class TransactionService(jdbcTemplate: JdbcTemplate) {
         if (principalList.isEmpty()) {
             throw NoSuchEntityException("There is no user with login $userLogin")
         }
+
+        categoryService.getCategoryById(transaction.categoryId)//checks existing of the category
+
         val principal = principalList[0]
         if (transaction.transactionType == TransactionType.EXPENSE) {
             principalRepository.setAvailableFundsToPrincipal(
