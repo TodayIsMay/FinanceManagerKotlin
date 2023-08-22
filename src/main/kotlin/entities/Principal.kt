@@ -7,6 +7,7 @@ class Principal(
     val id: Long?,
     private val username: String,
     private var password: String,
+    var salt: String?,
     var availableFunds: Double,
     var roles: MutableCollection<Role>?
 ) : UserDetails {

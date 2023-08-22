@@ -27,7 +27,7 @@ class TransactionController(
 
     @GetMapping("/version")
     fun getVersion(): String {
-        return "09.08.2023 15:22"
+        return "14.08.2023 22:31"
     }
 
     @GetMapping("/transactions/{userLogin}")

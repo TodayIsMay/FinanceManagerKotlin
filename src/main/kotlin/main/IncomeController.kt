@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*
 import services.IncomeService
 import java.util.logging.Logger
 
+@Deprecated(message = "Now Transaction Controller is used both for incomes and expenses")
 @RestController
 class IncomeController(
     @Autowired

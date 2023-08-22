@@ -5,8 +5,8 @@ import entities.Transaction
 import exceptions.NoSuchEntityException
 import exceptions.UserNotAuthorizedException
 import exceptions.WrongPasswordException
+import main.PasswordEncryptor
 import org.springframework.jdbc.core.JdbcTemplate
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import repositories.PrincipalRepository
 import repositories.TransactionRepository
 import java.nio.charset.StandardCharsets
@@ -16,9 +16,10 @@ import java.util.logging.Logger
 class TransactionService(jdbcTemplate: JdbcTemplate) {
     private val log = Logger.getLogger(this.javaClass.name)
 
-    private val bCryptPasswordEncoder: BCryptPasswordEncoder = BCryptPasswordEncoder()
+    private val encryptor = PasswordEncryptor()
     private val transactionRepository: TransactionRepository = TransactionRepository(jdbcTemplate)
     private val principalRepository: PrincipalRepository = PrincipalRepository(jdbcTemplate)
+    private val categoryService: CategoryService = CategoryService(jdbcTemplate)
 
     fun getTransactionsByUserLogin(userLogin: String, auth: String): List<Transaction> {
         checkAuth(userLogin, auth)
@@ -38,6 +39,9 @@ class TransactionService(jdbcTemplate: JdbcTemplate) {
         if (principalList.isEmpty()) {
             throw NoSuchEntityException("There is no user with login $userLogin")
         }
+
+        categoryService.getCategoryById(transaction.categoryId)//checks existing of the category
+
         val principal = principalList[0]
         if (transaction.transactionType == TransactionType.EXPENSE) {
             principalRepository.setAvailableFundsToPrincipal(
@@ -106,11 +110,19 @@ class TransactionService(jdbcTemplate: JdbcTemplate) {
                 throw IllegalArgumentException("There are more than one user with username $userLogin. How did this happen?..")
             }
 
-            val encodedPassword = principalInList[0].password
             val onlyPassword = auth.substring("Basic".length).trim()
             val decodedBasic = Base64.getDecoder().decode(onlyPassword).toString(StandardCharsets.UTF_8)
             val values = decodedBasic.split(":")
-            if (!bCryptPasswordEncoder.matches(values[1], encodedPassword)) {
+
+            val principalFromBD = principalInList[0]
+            val saltFromDB = principalFromBD.salt
+            if (saltFromDB == null) {
+                log.severe("Principal's salt is null. Principal = ${principalFromBD.username}")
+                throw exceptions.IllegalArgumentException("Principal's salt is null")
+            }
+            val encodedPasswordFromRequest = encryptor.generateHash(values[1], saltFromDB.toString())
+
+            if (!encodedPasswordFromRequest.equals(principalFromBD.password)) {
                 log.warning("Wrong password!")
                 throw WrongPasswordException("Wrong password!")
             }
