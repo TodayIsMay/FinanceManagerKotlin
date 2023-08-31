@@ -9,6 +9,7 @@ class TransactionDto(
     var amount: Double,
     var category: String,
     var comment: String,
-    var date: LocalDateTime
+    var date: LocalDateTime,
+    var isMandatory: Boolean
 ) {
 }

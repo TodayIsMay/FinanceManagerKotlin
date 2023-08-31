@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
@@ -55,4 +56,23 @@ class SecurityConfig(@Autowired private val managerBeans: ManagerBeans) {
             .anyRequest().permitAll()
         return httpSecurity.build()
     }
+//
+//    @Bean
+//    fun filterChain(httpSecurity: HttpSecurity): SecurityFilterChain {
+//        httpSecurity
+//            .httpBasic()
+////            .csrf()
+////            .disable()
+////            .authorizeHttpRequests()
+//            //            .authorizeHttpRequests()
+//            .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//            .and().authorizeRequests()
+//
+//            .requestMatchers("/registration").anonymous()
+//            .requestMatchers("/login").permitAll()
+//            //.anyRequest().authenticated()
+////            .anyRequest().permitAll()
+//            .anyRequest().authenticated()
+//        return httpSecurity.build()
+//    }
 }

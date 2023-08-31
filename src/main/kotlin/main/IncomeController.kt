@@ -1,12 +1,14 @@
 package main
 
 import entities.Income
+import io.swagger.v3.oas.annotations.Hidden
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import services.IncomeService
 import java.util.logging.Logger
 
 @Deprecated(message = "Now Transaction Controller is used both for incomes and expenses")
+@Hidden
 @RestController
 class IncomeController(
     @Autowired

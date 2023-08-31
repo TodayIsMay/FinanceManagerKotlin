@@ -57,6 +57,20 @@ class PrincipalService(
         return password.equals(principalFromBD.password)
     }
 
+    fun returnHash(principal: Principal): String {
+        val principalFromBD = findByUsername(principal.username)
+        val saltFromDB = principalFromBD.salt
+        if (saltFromDB == null) {
+            log.severe("Principal's salt is null. Principal = ${principal.username}")
+            throw exceptions.IllegalArgumentException("Principal's salt is null")
+        }
+        val password = encryptor.generateHash(principal.password, saltFromDB)
+        if (password.equals(principalFromBD.password)) {
+            return "Basic" + Base64.getEncoder().encodeToString(password.toByteArray())
+        }
+        return "Signing in failed"
+    }
+
     fun decodeBase64(base64: String): String {
         val onlyPassword = base64.substring("Basic".length).trim()
         val decodedBasic = Base64.getDecoder().decode(onlyPassword).toString(StandardCharsets.UTF_8)

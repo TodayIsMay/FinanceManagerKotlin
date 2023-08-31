@@ -4,9 +4,13 @@ import UserMapper
 import entities.Principal
 import entities.User
 import entities.dto.UserDto
+import io.swagger.v3.oas.annotations.Hidden
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
+@Tag(name = "Users", description = "Registration and login")
+@Hidden
 @RestController
 class UserController(
     @Autowired managerBeans: ManagerBeans, @Autowired

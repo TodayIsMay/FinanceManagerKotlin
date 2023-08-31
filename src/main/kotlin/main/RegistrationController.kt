@@ -1,12 +1,15 @@
 package main
 
 import entities.Principal
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
+@Tag(name = "Auth", description = "Registration and login")
 class RegistrationController(
     @Autowired securityConfig: SecurityConfig,
 ) {
@@ -25,7 +28,7 @@ class RegistrationController(
     @PostMapping("/login")
     fun login(@RequestBody principal: Principal): String {
         if (principalService.checkPrincipalPassword(principal)) {
-            return "User ${principal.username} was signed in!"
+            return principalService.returnHash(principal)
         }
         return "Signing in failed"
     }

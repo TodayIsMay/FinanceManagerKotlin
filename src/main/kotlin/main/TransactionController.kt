@@ -4,6 +4,9 @@ import TransactionMapper
 import calculators.MonthCalculator
 import entities.Transaction
 import entities.dto.TransactionDto
+import exceptions.UserNotAuthorizedException
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import services.PrincipalService
@@ -12,6 +15,8 @@ import java.time.LocalDate
 import java.util.logging.Logger
 
 @RestController
+@Tag(name = "Transactions", description = "Operations with transactions")
+@SecurityRequirement(name = "basicAuth")
 class TransactionController(
     @Autowired
     val managerBeans: ManagerBeans,
@@ -33,8 +38,12 @@ class TransactionController(
     @GetMapping("/transactions/{userLogin}")
     fun getTransactionsByUserLogin(
         @PathVariable userLogin: String,
-        @RequestHeader("Authorization") auth: String
+        @RequestHeader(required = false, name = "Authorization") auth: String?
     ): List<TransactionDto> {
+        if (auth == null) {
+            log.severe("Authorization required for principal $userLogin")
+            throw UserNotAuthorizedException("Authorization required")
+        }
         log.info("Received user login: $userLogin")
         return transactionMapper.toTransactionDtos(transactionService.getTransactionsByUserLogin(userLogin, auth))
     }

@@ -23,13 +23,13 @@ class TransactionMapper(
         if (transaction.comment != null) {
             comment = transaction.comment!!
         }
-        var amount = Double.NaN
+        var amount = transaction.amount
         if (transaction.transactionType == TransactionType.EXPENSE) {
             amount = 0 - transaction.amount
         }
         return TransactionDto(
             transaction.id, transaction.transactionType, amount, category.name, comment,
-            transaction.date
+            transaction.date, transaction.isMandatory
         )
     }
 

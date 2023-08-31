@@ -16,6 +16,7 @@ class TransactionRepository(private val jdbcTemplate: JdbcTemplate) {
                 rs.getDouble("amount"),
                 rs.getString("comment"),
                 rs.getLong("category_id"),
+                rs.getBoolean("is_mandatory"),
                 rs.getTimestamp("creation_timestamp").toLocalDateTime(),
                 rs.getTimestamp("transaction_timestamp").toLocalDateTime()
             )
@@ -25,7 +26,7 @@ class TransactionRepository(private val jdbcTemplate: JdbcTemplate) {
 
     fun insertTransaction(transaction: Transaction) {
         val sql = "INSERT INTO transactions (user_id, comment, amount, category_id, transaction_type, " +
-                "transaction_timestamp, creation_timestamp) VALUES (?, ?, ?, ?, ?, ?, ?)"
+                "transaction_timestamp, creation_timestamp, is_mandatory) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
         jdbcTemplate.update(
             sql,
             transaction.userId,
@@ -34,7 +35,8 @@ class TransactionRepository(private val jdbcTemplate: JdbcTemplate) {
             transaction.categoryId,
             transaction.transactionType.name,
             transaction.date,
-            transaction.creationTimestamp
+            transaction.creationTimestamp,
+            transaction.isMandatory
         )
     }
 
@@ -48,6 +50,7 @@ class TransactionRepository(private val jdbcTemplate: JdbcTemplate) {
                 rs.getDouble("amount"),
                 rs.getString("comment"),
                 rs.getLong("category_id"),
+                rs.getBoolean("is_mandatory"),
                 rs.getTimestamp("creation_timestamp").toLocalDateTime(),
                 rs.getTimestamp("transaction_timestamp").toLocalDateTime()
             )
@@ -64,6 +67,7 @@ class TransactionRepository(private val jdbcTemplate: JdbcTemplate) {
                 rs.getDouble("amount"),
                 rs.getString("comment"),
                 rs.getLong("category_id"),
+                rs.getBoolean("is_mandatory"),
                 rs.getTimestamp("creation_timestamp").toLocalDateTime(),
                 rs.getTimestamp("transaction_timestamp").toLocalDateTime()
             )
