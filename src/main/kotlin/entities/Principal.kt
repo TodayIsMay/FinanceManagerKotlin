@@ -3,6 +3,7 @@ package entities
 import io.swagger.v3.oas.annotations.media.Schema
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
+import java.time.LocalDate
 
 class Principal(
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
@@ -16,6 +17,27 @@ class Principal(
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     var roles: MutableCollection<Role>?
 ) : UserDetails {
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+    var startReportPeriod: LocalDate? = null
+
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+    var endReportPeriod: LocalDate? = null
+
+    constructor(
+        id: Long,
+        username: String,
+        password: String,
+        salt: String?,
+        availableFunds: Double,
+        roles: MutableCollection<Role>?,
+        @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+        startReportPeriod: LocalDate?,
+        @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+        endReportPeriod: LocalDate?
+    ) : this(id, username, password, salt, availableFunds, roles) {
+        this.startReportPeriod = startReportPeriod
+        this.endReportPeriod = endReportPeriod
+    }
 
     fun setPassword(password: String) {
         this.password = password

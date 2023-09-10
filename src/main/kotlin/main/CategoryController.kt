@@ -2,6 +2,7 @@ package main
 
 import entities.Category
 import exceptions.UserNotAuthorizedException
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.beans.factory.annotation.Autowired
@@ -33,7 +34,10 @@ class CategoryController(
 
     @PostMapping("/categories/insert")
     @SecurityRequirement(name = "basicAuth")
-    fun addCategory(@RequestBody category: Category, @RequestHeader("Authorization") auth: String?): Category {
+    fun addCategory(
+        @RequestBody category: Category,
+        @Parameter(required = false, hidden = true) @RequestHeader("Authorization") auth: String?
+    ): Category {
         if (auth == null) {
             log.severe("Authorization required")
             throw UserNotAuthorizedException("Authorization required")
@@ -44,7 +48,10 @@ class CategoryController(
 
     @DeleteMapping("/categories/delete/{id}")
     @SecurityRequirement(name = "basicAuth")
-    fun deleteCategory(@PathVariable id: Long, @RequestHeader("Authorization") auth: String?): String {
+    fun deleteCategory(
+        @PathVariable id: Long,
+        @Parameter(required = false, hidden = true) @RequestHeader("Authorization") auth: String?
+    ): String {
         if (auth == null) {
             log.severe("Authorization required")
             throw UserNotAuthorizedException("Authorization required")

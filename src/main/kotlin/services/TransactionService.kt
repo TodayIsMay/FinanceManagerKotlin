@@ -1,6 +1,7 @@
 package services
 
 import TransactionType
+import calculators.PeriodCalculator
 import entities.Transaction
 import exceptions.NoSuchEntityException
 import exceptions.UserNotAuthorizedException
@@ -10,6 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate
 import repositories.PrincipalRepository
 import repositories.TransactionRepository
 import java.nio.charset.StandardCharsets
+import java.time.LocalDate
 import java.util.*
 import java.util.logging.Logger
 
@@ -20,6 +22,7 @@ class TransactionService(jdbcTemplate: JdbcTemplate) {
     private val transactionRepository: TransactionRepository = TransactionRepository(jdbcTemplate)
     private val principalRepository: PrincipalRepository = PrincipalRepository(jdbcTemplate)
     private val categoryService: CategoryService = CategoryService(jdbcTemplate)
+    private val periodCalculator: PeriodCalculator = PeriodCalculator()
 
     fun getTransactionsByUserLogin(userLogin: String, auth: String): List<Transaction> {
         checkAuth(userLogin, auth)
@@ -92,6 +95,12 @@ class TransactionService(jdbcTemplate: JdbcTemplate) {
             )
         }
         return "Transaction was deleted!"
+    }
+
+    fun calculate(auth: String, userLogin: String): Map<LocalDate, Double> {
+        checkAuth(userLogin, auth)
+        val principal = principalRepository.findByUserName(userLogin)
+        return periodCalculator.calculate(principal[0])
     }
 
     private fun checkAuth(userLogin: String, auth: String) {

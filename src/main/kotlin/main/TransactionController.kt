@@ -1,10 +1,11 @@
 package main
 
 import TransactionMapper
-import calculators.MonthCalculator
+import calculators.PeriodCalculator
 import entities.Transaction
 import entities.dto.TransactionDto
 import exceptions.UserNotAuthorizedException
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.beans.factory.annotation.Autowired
@@ -28,7 +29,7 @@ class TransactionController(
     private val transactionService: TransactionService = managerBeans.transactionService()
     private val principalService: PrincipalService = securityConfig.userDetailsService()
     private val transactionMapper: TransactionMapper = TransactionMapper(managerBeans)
-    private val monthCalculator = MonthCalculator(LocalDate.now(), LocalDate.of(2023, 6, 29))
+    private val periodCalculator = PeriodCalculator()
 
     @GetMapping("/version")
     fun getVersion(): String {
@@ -38,7 +39,10 @@ class TransactionController(
     @GetMapping("/transactions/{userLogin}")
     fun getTransactionsByUserLogin(
         @PathVariable userLogin: String,
-        @RequestHeader(required = false, name = "Authorization") auth: String?
+        @Parameter(required = false, hidden = true) @RequestHeader(
+            required = false,
+            name = "Authorization"
+        ) auth: String?
     ): List<TransactionDto> {
         if (auth == null) {
             log.severe("Authorization required for principal $userLogin")
@@ -51,15 +55,32 @@ class TransactionController(
     @PostMapping("/transactions/{userLogin}")
     fun insertTransactionByUserLogin(
         @PathVariable userLogin: String,
-        @RequestHeader("Authorization") auth: String,
+        @Parameter(required = false, hidden = true) @RequestHeader("Authorization") auth: String,
         @RequestBody transaction: Transaction
     ): TransactionDto {
         log.info("Received user login: $userLogin, transaction: $transaction")
-        return transactionMapper.toTransactionDto(transactionService.insertTransactionByLogin(userLogin, auth, transaction))
+        return transactionMapper.toTransactionDto(
+            transactionService.insertTransactionByLogin(
+                userLogin,
+                auth,
+                transaction
+            )
+        )
     }
 
     @DeleteMapping("/transactions/{transactionId}")
-    fun deleteTransactionById(@PathVariable transactionId: Long, @RequestHeader("Authorization") auth: String): String {
+    fun deleteTransactionById(
+        @PathVariable transactionId: Long,
+        @Parameter(required = false, hidden = true) @RequestHeader("Authorization") auth: String
+    ): String {
         return transactionService.deleteTransactionById(transactionId, auth)
+    }
+
+    @GetMapping("/calculator")
+    fun calculate(
+        @Parameter(required = false, hidden = true) @RequestHeader("Authorization") auth: String,
+        @PathVariable userLogin: String
+    ): Map<LocalDate, Double> {
+        return transactionService.calculate(auth, userLogin)
     }
 }
