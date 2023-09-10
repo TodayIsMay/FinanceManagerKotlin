@@ -25,8 +25,8 @@ class PrincipalRepository(private val jdbcTemplate: JdbcTemplate) {
             val password = set[0]["password"].toString()
             val salt = if (set[0]["salt"] == null) null else set[0]["salt"].toString()
             val availableFunds = if (set[0]["available_funds"] == null) 0.0 else set[0]["available_funds"].toString().toDouble()
-            val mbStartReportPeriod = set[0]["start_report_period"]
-            val mbEndReportPeriod = set[0]["end_report_period"]
+            val mbStartReportPeriod = set[0]["start_period"]
+            val mbEndReportPeriod = set[0]["end_period"]
             val startReportPeriod = if (mbStartReportPeriod == null) null else LocalDate.parse(
                 mbStartReportPeriod.toString(),
                 formatter
@@ -59,8 +59,8 @@ class PrincipalRepository(private val jdbcTemplate: JdbcTemplate) {
             val password = set[0]["password"].toString()
             val salt = set[0]["salt"].toString()
             val availableFunds = set[0]["available_funds"].toString().toDouble()
-            val mbStartReportPeriod = set[0]["start_report_period"]
-            val mbEndReportPeriod = set[0]["end_report_period"]
+            val mbStartReportPeriod = set[0]["start_period"]
+            val mbEndReportPeriod = set[0]["end_period"]
             val startReportPeriod = if (mbStartReportPeriod == null) null else LocalDate.parse(
                 mbStartReportPeriod.toString(),
                 formatter
@@ -96,8 +96,8 @@ class PrincipalRepository(private val jdbcTemplate: JdbcTemplate) {
             val password = set[0]["password"].toString()
             val salt = set[0]["salt"].toString()
             val availableFunds = set[0]["available_funds"].toString().toDouble()
-            val mbStartReportPeriod = set[0]["start_report_period"]
-            val mbEndReportPeriod = set[0]["end_report_period"]
+            val mbStartReportPeriod = set[0]["start_period"]
+            val mbEndReportPeriod = set[0]["end_period"]
             val startReportPeriod = if (mbStartReportPeriod == null) null else LocalDate.parse(
                 mbStartReportPeriod.toString(),
                 formatter
@@ -122,7 +122,7 @@ class PrincipalRepository(private val jdbcTemplate: JdbcTemplate) {
 
     fun setReportPeriodForPrincipal(id: Long, endReportPeriod: LocalDate) {
         val principalList: MutableList<Principal> = arrayListOf()
-        val updateSql = "UPDATE principals SET end_report_period = ? WHERE id = ?"
+        val updateSql = "UPDATE principals SET end_period = ? WHERE id = ?"
         jdbcTemplate.update(updateSql, endReportPeriod, id)
     }
 }
