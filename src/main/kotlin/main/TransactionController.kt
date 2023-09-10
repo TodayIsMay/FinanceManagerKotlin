@@ -76,7 +76,7 @@ class TransactionController(
         return transactionService.deleteTransactionById(transactionId, auth)
     }
 
-    @GetMapping("/calculator")
+    @GetMapping("/calculator/{userLogin}")
     fun calculate(
         @Parameter(required = false, hidden = true) @RequestHeader("Authorization") auth: String,
         @PathVariable userLogin: String
