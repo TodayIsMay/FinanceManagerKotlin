@@ -78,4 +78,20 @@ class TransactionRepository(private val jdbcTemplate: JdbcTemplate) {
         val sql = "DELETE from transactions WHERE id = ?"
         jdbcTemplate.update(sql, transactionId)
     }
+
+    fun editTransactionById(transactionId: Long, updatedTransaction: Transaction): List<Transaction> {
+        val sql =
+            "UPDATE transactions SET transaction_type = ?, amount = ?, comment = ?, category_id = ?, is_mandatory = ?, transaction_timestamp = ? WHERE id = ?"
+        jdbcTemplate.update(
+            sql,
+            updatedTransaction.transactionType.name,
+            updatedTransaction.amount,
+            updatedTransaction.comment,
+            updatedTransaction.categoryId,
+            updatedTransaction.isMandatory,
+            updatedTransaction.date,
+            transactionId
+        )
+        return getTransactionById(transactionId)
+    }
 }

@@ -3,6 +3,7 @@ package calculators
 import entities.Principal
 import java.math.RoundingMode
 import java.time.LocalDate
+import java.util.logging.Logger
 import kotlin.math.roundToInt
 
 /**
@@ -11,13 +12,14 @@ import kotlin.math.roundToInt
  * Start of the report period is always current day.
  */
 class PeriodCalculator {
+    private val log = Logger.getLogger(this.javaClass.name)
     private val currentMonth = LocalDate.now().month
     private val currentYear = LocalDate.now().year
     private var lastDayOfMonth = LocalDate.now().lengthOfMonth()
     private var start = LocalDate.now()
     private var end = LocalDate.of(currentYear, currentMonth, lastDayOfMonth)
 
-    fun calculate(principal: Principal): Map<LocalDate, Double> {
+    fun calculate(principal: Principal, prospectiveAmount: Double?): Map<LocalDate, Double> {
         if (principal.endReportPeriod != null) {
             end = principal.endReportPeriod
         }
@@ -25,7 +27,13 @@ class PeriodCalculator {
         if (amountOfDays < 1) {
             amountOfDays = 1
         }
-        val amountPerDay = principal.availableFunds/amountOfDays.toDouble()
+        val amountPerDay: Double
+        if (prospectiveAmount == null) {
+            amountPerDay = principal.availableFunds/amountOfDays.toDouble()
+        } else {
+            amountPerDay = prospectiveAmount/amountOfDays.toDouble()
+        }
+
         val resultExpenseMap = mutableMapOf<LocalDate, Double>()
         resultExpenseMap[start] = amountPerDay
         for (i in 1 until amountOfDays) {
@@ -33,6 +41,7 @@ class PeriodCalculator {
             val roundedResult = (previousDayAmount!! + amountPerDay).toBigDecimal().setScale(2, RoundingMode.HALF_UP).toDouble()
             resultExpenseMap[start.plusDays(i)] = roundedResult
         }
+        log.info("First day = $start, Last day = $end")
         return resultExpenseMap
     }
 

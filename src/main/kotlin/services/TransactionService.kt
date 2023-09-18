@@ -97,10 +97,34 @@ class TransactionService(jdbcTemplate: JdbcTemplate) {
         return "Transaction was deleted!"
     }
 
-    fun calculate(auth: String, userLogin: String): Map<LocalDate, Double> {
+    fun editTransactionById(auth: String, transactionId: Long, updatedTransaction: Transaction): Transaction {
+        if (auth.isBlank()) {
+            log.severe("Only authorized users can delete transactions!")
+            throw UserNotAuthorizedException("Who are you? Only authorized users can delete transactions!")
+        }
+        val transactionList = transactionRepository.getTransactionById(transactionId)
+        if (transactionList.size > 1) {
+            log.severe("There are more than 1 transaction with id $transactionId")
+            throw exceptions.IllegalArgumentException("There are more than 1 transaction with id $transactionId")
+        }
+        if (transactionList.isEmpty()) {
+            log.info("There are no any transaction with id $transactionId")
+            throw NoSuchEntityException("There are no any transaction with id $transactionId")
+        }
+        if (!checkUser(transactionList[0], auth)) {
+            log.severe("Only owner of transaction can delete it!")
+            throw exceptions.IllegalArgumentException("Only owner of transaction can delete it!")
+        }
+        val editedTransaction = transactionRepository.editTransactionById(transactionId, updatedTransaction)[0]
+        val principal = principalRepository.findById(editedTransaction.userId!!)
+        principalRepository.setAvailableFundsToPrincipal(principal[0].id!!, algorithm(principal[0].availableFunds, transactionList[0], editedTransaction))
+        return editedTransaction
+    }
+
+    fun calculate(auth: String, userLogin: String, prospectiveAmount: Double?): Map<LocalDate, Double> {
         checkAuth(userLogin, auth)
         val principal = principalRepository.findByUserName(userLogin)
-        return periodCalculator.calculate(principal[0])
+        return periodCalculator.calculate(principal[0], prospectiveAmount)
     }
 
     private fun checkAuth(userLogin: String, auth: String) {
@@ -158,5 +182,23 @@ class TransactionService(jdbcTemplate: JdbcTemplate) {
         val decodedBasic = Base64.getDecoder().decode(onlyPassword).toString(StandardCharsets.UTF_8)
         val values = decodedBasic.split(":")
         return values[0]
+    }
+
+    private fun algorithm(availableFunds: Double, transaction: Transaction, editedTransaction: Transaction): Double {
+        val editedFunds: Double
+        if (transaction.transactionType != editedTransaction.transactionType) {
+            if (editedTransaction.transactionType == TransactionType.EXPENSE) {
+                editedFunds = availableFunds - transaction.amount - editedTransaction.amount
+            } else {
+                editedFunds = availableFunds + transaction.amount + editedTransaction.amount
+            }
+        } else {
+            if (editedTransaction.transactionType == TransactionType.EXPENSE) {
+                editedFunds = availableFunds + transaction.amount - editedTransaction.amount
+            } else {
+                editedFunds = availableFunds - transaction.amount + editedTransaction.amount
+            }
+        }
+        return editedFunds
     }
 }

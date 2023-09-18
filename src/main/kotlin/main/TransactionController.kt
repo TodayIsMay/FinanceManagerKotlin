@@ -76,11 +76,29 @@ class TransactionController(
         return transactionService.deleteTransactionById(transactionId, auth)
     }
 
-    @GetMapping("/calculator/{userLogin}")
+    @GetMapping("/calculator/current/{userLogin}")
     fun calculate(
         @Parameter(required = false, hidden = true) @RequestHeader("Authorization") auth: String,
         @PathVariable userLogin: String
     ): Map<LocalDate, Double> {
-        return transactionService.calculate(auth, userLogin)
+        return transactionService.calculate(auth, userLogin, null)
+    }
+
+    @GetMapping("/calculator/given_amount/{userLogin}/{prospectiveAmount}")
+    fun calculateFromGivenAmount(
+        @Parameter(required = false, hidden = true) @RequestHeader("Authorization") auth: String,
+        @PathVariable userLogin: String,
+        @PathVariable prospectiveAmount: Double
+    ): Map<LocalDate, Double> {
+        return transactionService.calculate(auth, userLogin, prospectiveAmount)
+    }
+
+    @PatchMapping("/transactions/{transactionId}")
+    fun editTransactionById(
+        @Parameter(required = false, hidden = true) @RequestHeader("Authorization") auth: String,
+        @PathVariable transactionId: Long,
+        @RequestBody editedTransaction: Transaction
+    ): TransactionDto {
+        return transactionMapper.toTransactionDto(transactionService.editTransactionById(auth, transactionId, editedTransaction))
     }
 }
